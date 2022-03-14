@@ -18,11 +18,11 @@ MatrixXd trans(2,1);
 MatrixXd esc(2,2);
 MatrixXd rot(2,2);
 float pi = 3.141592;
-float length = 100;
+float length = 300;
 float tx = -100;//x translation
 float ty = -100;//y translation
-float s = 3; //scalation
-float r = 0 * -pi/180; //rotation
+float s = 1; //scalation
+float r = 0; //rotation
 
 void draw(){
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -64,9 +64,11 @@ void generateBasicMetrics(float length){
     float ancho = (float)2/(float)3*length;
     float manga = ancho/(float)3;
     float puntoCuello = ancho/(float)4;
+
     Points.push_back({0,0});
-    //manga iz
     Points.push_back({0,length-manga});
+
+    //manga iz
     Points.push_back({-manga/4,length-manga-(manga/2)});
     Points.push_back({-manga,length-manga*1.5});
 
@@ -75,38 +77,35 @@ void generateBasicMetrics(float length){
         float x = BezierQuadratic(-manga,-manga,puntoCuello,t);
         float y = BezierQuadratic(length-manga*1.5,length,length,t);
         Points.push_back({x,y});
-    }
-    //Points.push_back({0,length});
-    
+    }    
     //cuello
-    //Points.push_back({puntoCuello,length+(puntoCuello/(float)2)});
     for (int i = 0; i < 5; ++i){
         float t = ((float)i) / (float(5 - 1));
         float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
         float y = BezierQuadratic(length,length-(puntoCuello/(float)2),length,t);
         Points.push_back({x,y});
     }
-    //Points.push_back({puntoCuello,length+(puntoCuello/(float)2)});
     for (int i = 0; i < 5; ++i){
         float t = ((float)i) / (float(5 - 1));
         float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
         float y = BezierQuadratic(length,length-(puntoCuello/2),length,t);
         Points.push_back({x,y});
     }
-    //Points.push_back({ancho-puntoCuello,length+(puntoCuello/(float)2)});
-    //Points.push_back({ancho,length});
+
+    //manga der
     for (int i = 0; i < 5; ++i){
         float t = ((float)i) / (float(5 - 1));
-        float x = BezierQuadratic(ancho-puntoCuello,ancho,ancho+manga,t);
+        float x = BezierQuadratic(ancho-puntoCuello,ancho+manga,ancho+manga,t);
         float y = BezierQuadratic(length,length,length-manga*1.5,t);
         Points.push_back({x,y});
     }
-    //manga der
-    //Points.push_back({ancho+manga,length-(manga/(float)2)});
-    Points.push_back({ancho+manga,length-manga-(manga/(float)2)});
+    
+    Points.push_back({ancho+manga,length-manga*1.5});
+    Points.push_back({ancho+manga/4,length-manga-(manga/2)});
+
+
     Points.push_back({ancho,length-manga});
     Points.push_back({ancho,0});
-
     Points.push_back({0,0});
 }
 void myInit(){
@@ -117,6 +116,20 @@ void myInit(){
 }
 //g++ -I eigen-3.4.0/ -o m TShirt.cpp -lGL -lGLU -lglut
 int main (int argc, char** argv){
+    cout << "Translation x (default -100): ";
+    cin >> tx;
+    cout << "\n";
+    cout << "Translation y (default -100): ";
+    cin >> ty;
+    cout << "\n";
+    cout << "Scalation (default 1): ";
+    cin >> s;
+    cout << "\n";
+    cout << "Rotation (default 0): ";
+    cin >> r;
+    cout << "\n";
+    r = r * -pi/180;
+
     glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE  | GLUT_RGB);
 	glutInitWindowSize(900,600);
