@@ -71,30 +71,30 @@ void generateBasicMetrics(float length){
     //manga iz
     Points.push_back({-manga/4,length-manga-(manga/2)});
     Points.push_back({-manga,length-manga*1.5});
-
-    for (int i = 0; i < 5; ++i){
-        float t = ((float)i) / (float(5 - 1));
+    int nPoints = 20;
+    for (int i = 0; i < nPoints; ++i){
+        float t = ((float)i) / (float(nPoints - 1));
         float x = BezierQuadratic(-manga,-manga,puntoCuello,t);
         float y = BezierQuadratic(length-manga*1.5,length,length,t);
         Points.push_back({x,y});
     }    
     //cuello
-    for (int i = 0; i < 5; ++i){
-        float t = ((float)i) / (float(5 - 1));
+    for (int i = 0; i < nPoints; ++i){
+        float t = ((float)i) / (float(nPoints - 1));
         float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
         float y = BezierQuadratic(length,length-(puntoCuello/(float)2),length,t);
         Points.push_back({x,y});
     }
-    for (int i = 0; i < 5; ++i){
-        float t = ((float)i) / (float(5 - 1));
+    for (int i = 0; i < nPoints; ++i){
+        float t = ((float)i) / (float(nPoints - 1));
         float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
         float y = BezierQuadratic(length,length-(puntoCuello/2),length,t);
         Points.push_back({x,y});
     }
 
     //manga der
-    for (int i = 0; i < 5; ++i){
-        float t = ((float)i) / (float(5 - 1));
+    for (int i = 0; i < nPoints; ++i){
+        float t = ((float)i) / (float(nPoints - 1));
         float x = BezierQuadratic(ancho-puntoCuello,ancho+manga,ancho+manga,t);
         float y = BezierQuadratic(length,length,length-manga*1.5,t);
         Points.push_back({x,y});
@@ -116,6 +116,8 @@ void myInit(){
 }
 //g++ -I eigen-3.4.0/ -o m TShirt.cpp -lGL -lGLU -lglut
 int main (int argc, char** argv){
+    cout << "Length (default 300): ";
+    cin >> length;
     cout << "Translation x (default -100): ";
     cin >> tx;
     cout << "\n";
@@ -132,7 +134,7 @@ int main (int argc, char** argv){
 
     glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE  | GLUT_RGB);
-	glutInitWindowSize(900,600);
+	glutInitWindowSize(1280,720);
 	glutInitWindowPosition(0,0);
 	glutCreateWindow("Test1");
 
