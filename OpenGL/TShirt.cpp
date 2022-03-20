@@ -82,13 +82,19 @@ void generateBasicMetrics(float length){
     for (int i = 0; i < nPoints; ++i){
         float t = ((float)i) / (float(nPoints - 1));
         float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
-        float y = BezierQuadratic(length,length-(puntoCuello/(float)2),length,t);
+        float y = BezierQuadratic(length,length-(puntoCuello/2),length,t);
         Points.push_back({x,y});
     }
     for (int i = 0; i < nPoints; ++i){
         float t = ((float)i) / (float(nPoints - 1));
         float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
-        float y = BezierQuadratic(length,length-(puntoCuello/2),length,t);
+        float y = BezierQuadratic(length,length-(puntoCuello/3),length,t);
+        Points.push_back({x,y});
+    }
+    for (int i = 0; i < nPoints; ++i){
+        float t = ((float)i) / (float(nPoints - 1));
+        float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
+        float y = BezierQuadratic(length,length+(puntoCuello/10),length,t);
         Points.push_back({x,y});
     }
 
