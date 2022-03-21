@@ -12,15 +12,15 @@ using Eigen::MatrixXd;
 vector<pair<float,float>> Points;
 
 //largo                 = 100
-//ancho 2/3 largo       = 2/3 * 100
-//mangas 1/3 espalda    = 1/3 * ancho
+//width 2/3 largo       = 2/3 * 100
+//sleeves 1/3 espalda    = 1/3 * width
 MatrixXd trans(2,1);
 MatrixXd esc(2,2);
 MatrixXd rot(2,2);
 float pi = 3.141592;
 float length = 300;
-float tx = -100;//x translation
-float ty = -100;//y translation
+float tx = 0;//x translation
+float ty = 0;//y translation
 float s = 1; //scalation
 float r = 0; //rotation
 
@@ -61,58 +61,58 @@ float BezierQuadratic(float A, float B, float C, float t){
 }
 
 void generateBasicMetrics(float length){
-    float ancho = (float)2/(float)3*length;
-    float manga = ancho/(float)3;
-    float puntoCuello = ancho/(float)4;
+    float width = ((float)2/(float)3*length);
+    float sleeve = width/(float)3;
+    float neckPoint = width/(float)4;
+    length = length/2;
+    width = width/2;
+    Points.push_back({-width,-length});
+    Points.push_back({-width,length-sleeve});
 
-    Points.push_back({0,0});
-    Points.push_back({0,length-manga});
-
-    //manga iz
-    Points.push_back({-manga/4,length-manga-(manga/2)});
-    Points.push_back({-manga,length-manga*1.5});
+    //left sleeve
+    Points.push_back({-sleeve/4-width,length-sleeve-(sleeve/2)});
+    Points.push_back({-sleeve-width,length-sleeve*1.5});
+    
     int nPoints = 20;
     for (int i = 0; i < nPoints; ++i){
         float t = ((float)i) / (float(nPoints - 1));
-        float x = BezierQuadratic(-manga,-manga,puntoCuello,t);
-        float y = BezierQuadratic(length-manga*1.5,length,length,t);
+        float x = BezierQuadratic(-sleeve-width,-sleeve-width,-neckPoint,t);
+        float y = BezierQuadratic(length-sleeve*1.5,length,length,t);
         Points.push_back({x,y});
     }    
-    //cuello
+    //neck
     for (int i = 0; i < nPoints; ++i){
         float t = ((float)i) / (float(nPoints - 1));
-        float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
-        float y = BezierQuadratic(length,length-(puntoCuello/2),length,t);
+        float x = BezierQuadratic(-neckPoint,0,neckPoint,t);
+        float y = BezierQuadratic(length,length-(neckPoint/2),length,t);
         Points.push_back({x,y});
     }
     for (int i = 0; i < nPoints; ++i){
         float t = ((float)i) / (float(nPoints - 1));
-        float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
-        float y = BezierQuadratic(length,length-(puntoCuello/3),length,t);
+        float x = BezierQuadratic(-neckPoint,0,neckPoint,t);
+        float y = BezierQuadratic(length,length-(neckPoint/3),length,t);
         Points.push_back({x,y});
     }
     for (int i = 0; i < nPoints; ++i){
         float t = ((float)i) / (float(nPoints - 1));
-        float x = BezierQuadratic(puntoCuello,ancho/2,ancho-puntoCuello,t);
-        float y = BezierQuadratic(length,length+(puntoCuello/10),length,t);
-        Points.push_back({x,y});
-    }
-
-    //manga der
-    for (int i = 0; i < nPoints; ++i){
-        float t = ((float)i) / (float(nPoints - 1));
-        float x = BezierQuadratic(ancho-puntoCuello,ancho+manga,ancho+manga,t);
-        float y = BezierQuadratic(length,length,length-manga*1.5,t);
+        float x = BezierQuadratic(-neckPoint,0,neckPoint,t);
+        float y = BezierQuadratic(length,length+(neckPoint/10),length,t);
         Points.push_back({x,y});
     }
     
-    Points.push_back({ancho+manga,length-manga*1.5});
-    Points.push_back({ancho+manga/4,length-manga-(manga/2)});
+    //Right sleeve
+    for (int i = 0; i < nPoints; ++i){
+        float t = ((float)i) / (float(nPoints - 1));
+        float x = BezierQuadratic(neckPoint,width+sleeve,width+sleeve,t);
+        float y = BezierQuadratic(length,length,length-sleeve*1.5,t);
+        Points.push_back({x,y});
+    }
+    Points.push_back({width+sleeve,length-sleeve*1.5});
+    Points.push_back({width+sleeve/4,length-sleeve-(sleeve/2)});
 
-
-    Points.push_back({ancho,length-manga});
-    Points.push_back({ancho,0});
-    Points.push_back({0,0});
+    Points.push_back({width,length-sleeve});
+    Points.push_back({width,-length});
+    Points.push_back({-width,-length});
 }
 void myInit(){
 	glClearColor(1, 1, 1, 1);
@@ -122,12 +122,13 @@ void myInit(){
 }
 //g++ -I eigen-3.4.0/ -o m TShirt.cpp -lGL -lGLU -lglut
 int main (int argc, char** argv){
+    
     cout << "Length (default 300): ";
     cin >> length;
-    cout << "Translation x (default -100): ";
+    cout << "Translation x (default 0): ";
     cin >> tx;
     cout << "\n";
-    cout << "Translation y (default -100): ";
+    cout << "Translation y (default 0): ";
     cin >> ty;
     cout << "\n";
     cout << "Scalation (default 1): ";
@@ -142,7 +143,7 @@ int main (int argc, char** argv){
 	glutInitDisplayMode(GLUT_SINGLE  | GLUT_RGB);
 	glutInitWindowSize(1280,720);
 	glutInitWindowPosition(0,0);
-	glutCreateWindow("Test1");
+	glutCreateWindow("TShirt");
 
 	myInit();
 
